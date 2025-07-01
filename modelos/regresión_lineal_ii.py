@@ -51,6 +51,8 @@ df.corr()
 sb.set(rc={'figure.figsize':(15,8)})
 sb.heatmap(df.corr(), annot=True, cmap='YlGnBu')
 
+df.corr()['median_house_value'].sort_values(ascending=False)
+
 df['bedroom_ratio'] = df['total_rooms'] / df['total_bedrooms']
 
 """## Entrenamiendo del modelo de predicción
@@ -98,6 +100,8 @@ pd.DataFrame(info)
 print(modelo.score(X_train, y_train))
 print(modelo.score(X_test, y_test))
 
+sb.histplot(df['total_rooms'])
+
 sb.scatterplot(df, x='median_house_value', y='median_income')
 
 from sklearn.metrics import mean_squared_error
@@ -116,4 +120,20 @@ scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.fit_transform(X_test)
 
-pd.DataFrame(X_train_scaled)
+pd.DataFrame(X_test_scaled)
+
+modelo_escalado = LinearRegression()
+
+#entreno el modelo con el conjunto de entrenamiento
+modelo_escalado.fit(X_train_scaled, y_train)
+
+predicciones_escaled = modelo_escalado.predict(X_test_scaled)
+
+info_escaled = {
+    'predicciones': predicciones_escaled,
+    'y_test': y_test
+}
+
+pd.DataFrame(info_escaled)
+
+modelo_escalado.score(X_train_scaled, y_train)
